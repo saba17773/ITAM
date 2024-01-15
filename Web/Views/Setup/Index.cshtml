@@ -1,0 +1,701 @@
+@{ ViewData["Title"] = "Setup"; }
+
+<div class="box box-primary">
+    <div class="box-header with-border">
+        <h3 class="box-title">Approve Setup</h3>
+    </div>
+    <div class="box-body">
+        <div class="btn-panel">
+            <button class="btn btn-primary" type="button" id="btnAddEmailFlow">
+                <i class="fa fa-plus"></i> Add Email Flow
+            </button>
+            <button class="btn btn-default" type="button" id="btnChangeUser">
+                <i class="fa fa-search"></i> Change User
+            </button>
+        </div>
+        <table id="gridFlow"
+               class="table table-striped table-bordered table-hover table-condensed table-nowrap"
+               style="width:100%;">
+            <thead>
+                <tr>
+                    <th>Employee</th>
+                    <th>Email</th>
+                    <th>Company</th>
+                    <th>Group</th>
+                    <th>Level</th>
+                    <th>Notify To</th>
+                    <th>Final Approve</th>
+                    <th>Can Approve</th>
+                    <th>Email Backup</th>
+                    <th>Active</th>
+                </tr>
+                <tr>
+                    <th>Employee</th>
+                    <th>Email</th>
+                    <th>Company</th>
+                    <th>Group</th>
+                    <th>Level</th>
+                    <th>Notify To</th>
+                    <th>Final Approve</th>
+                    <th>Can Approve</th>
+                    <th>Email Backup</th>
+                    <th>Active</th>
+                </tr>
+            </thead>
+        </table>
+    </div>
+</div>
+
+<div class="box box-primary">
+    <div class="box-header with-border">
+        <h3 class="box-title">Approve Group</h3>
+    </div>
+    <div class="box-body">
+        <table id="gridApproveGroup"
+               class="table table-striped table-bordered table-hover table-condensed table-nowrap"
+               style="width:100%;">
+            <thead>
+                <tr>
+                    <th>Description</th>
+                    <th>Slug</th>
+                </tr>
+                <tr>
+                    <th>Description</th>
+                    <th>Slug</th>
+                </tr>
+            </thead>
+        </table>
+    </div>
+</div>
+
+<!-- modal add email flow -->
+<div class="modal" id="modalAddEmailFlow" tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-md" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button href="javascript.void(0);"
+                        class="btn btn-danger pull-right"
+                        data-dismiss="modal"
+                        aria-label="Close">
+                    <i class="fa fa-times"></i>
+                </button>
+                <h4 class="modal-title">Add New Email Flow</h4>
+            </div>
+            <div class="modal-body">
+                <!-- Content -->
+                <form id="formAddFlowEmail">
+                    <div class="form-group">
+                        <label for="UserId">User</label>
+                        <div class="input-group">
+                            <input type="hidden"
+                                   name="UserId"
+                                   id="UserId"
+                                   class="form-control" />
+                            <input type="text"
+                                   name="User"
+                                   id="User"
+                                   class="form-control"
+                                   readonly />
+                            <span class="input-group-btn">
+                                <button class="btn btn-info" id="btnSelectUser" type="button">
+                                    <i class="fa fa-search"></i> เลือก User
+                                </button>
+                            </span>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="GroupId">Group</label>
+                        <select name="GroupId" id="GroupId" class="form-control"></select>
+                    </div>
+
+                    <div class="form-group">
+                        <button type="submit" class="btn btn-success">
+                            <i class="fa fa-check"></i> Submit
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- modal select user -->
+<div class="modal" id="modalSelectUser" tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button href="javascript.void(0);"
+                        class="btn btn-danger pull-right"
+                        data-dismiss="modal"
+                        aria-label="Close">
+                    <i class="fa fa-times"></i>
+                </button>
+                <h4 class="modal-title">Select User</h4>
+            </div>
+            <div class="modal-body scroll-x">
+                <div class="btn-panel">
+                    <button class="btn btn-success"
+                            type="button"
+                            id="btnConfirmSelectUser">
+                        <i class="fa fa-check"></i> Confirm Select User
+                    </button>
+                </div>
+                <!-- Table -->
+                <table id="gridUser"
+                       class="table table-striped table-bordered table-hover table-condensed table-nowrap"
+                       style="width:100%;">
+                    <thead>
+                        <tr>
+                            <th>Username</th>
+                            <th>Employee Id</th>
+                            <th>Name</th>
+                            <th>Lastname</th>
+                            <th>Division</th>
+                            <th>Department</th>
+                            <th>Role</th>
+                            <th>Company</th>
+                            <th>Active</th>
+                            <th>Remark</th>
+                        </tr>
+                        <tr>
+                            <th>Username</th>
+                            <th>Employee Id</th>
+                            <th>Name</th>
+                            <th>Lastname</th>
+                            <th>Division</th>
+                            <th>Department</th>
+                            <th>Role</th>
+                            <th>Company</th>
+                            <th>Active</th>
+                            <th>Remark</th>
+                        </tr>
+                    </thead>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- modal select user for change -->
+<div class="modal" id="modalSelectUserForChange" tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button href="javascript.void(0);"
+                        class="btn btn-danger pull-right"
+                        data-dismiss="modal"
+                        aria-label="Close">
+                    <i class="fa fa-times"></i>
+                </button>
+                <h4 class="modal-title">Select User</h4>
+            </div>
+            <div class="modal-body scroll-x">
+                <div class="btn-panel">
+                    <button class="btn btn-success"
+                            type="button"
+                            id="btnConfirmSelectUserForChange">
+                        <i class="fa fa-check"></i> Confirm Select User
+                    </button>
+                </div>
+                <!-- Table -->
+                <table id="gridUserChange"
+                       class="table table-striped table-bordered table-hover table-condensed table-nowrap"
+                       style="width:100%;">
+                    <thead>
+                        <tr>
+                            <th>Username</th>
+                            <th>Employee Id</th>
+                            <th>Name</th>
+                            <th>Lastname</th>
+                            <th>Division</th>
+                            <th>Department</th>
+                            <th>Role</th>
+                            <th>Company</th>
+                            <th>Active</th>
+                            <th>Remark</th>
+                        </tr>
+                        <tr>
+                            <th>Username</th>
+                            <th>Employee Id</th>
+                            <th>Name</th>
+                            <th>Lastname</th>
+                            <th>Division</th>
+                            <th>Department</th>
+                            <th>Role</th>
+                            <th>Company</th>
+                            <th>Active</th>
+                            <th>Remark</th>
+                        </tr>
+                    </thead>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            // script here.
+
+            var _initial = new Promise(function (resolve, reject) {
+
+                loadGrid({
+                    el: "#gridFlow",
+                    processing: false,
+                    serverSide: false,
+                    deferRender: true,
+                    searching: true,
+                    order: [],
+                    orderCellsTop: true,
+                    destroy: true,
+                    initComplete: function () {
+                        resolve(true);
+                    },
+                    select: {
+                        style: "single",
+                    },
+                    ajax: {
+                        url: "/Setup/GetApproveSetupGrid",
+                        method: "post",
+                    },
+                    columns: [
+                        { data: "Employee" },
+                        { data: "Email" },
+                        { data: "Company" },
+                        { data: "ApproveGroup" },
+                        { data: "ApproveLevel" },
+                        { data: "NotifyTo" },
+                        { data: "FinalApprove" },
+                        { data: "CanApprove" },
+                        { data: "EmailBackup" },
+                        { data: "Active" },
+                    ],
+                    columnDefs: [
+                        {
+                            render: function (data, type, row) {
+                                return editable({
+                                    className: "--approve-group",
+                                    id: row.Id,
+                                    data: data,
+                                });
+                            },
+                            targets: 3,
+                        },
+                        {
+                            render: function (data, type, row) {
+                                return editable({
+                                    className: "--approve-level",
+                                    id: row.Id,
+                                    data: data,
+                                });
+                            },
+                            targets: 4,
+                        },
+                        {
+                            render: function (data, type, row) {
+                                return editable({
+                                    className: "--notify-to",
+                                    id: row.Id,
+                                    data: data === 1 ? "ใช่" : "ไม่ใช่",
+                                    setColor: ["ใช่", "ไม่ใช่"],
+                                });
+                            },
+                            targets: 5,
+                        },
+                        {
+                            render: function (data, type, row) {
+                                return editable({
+                                    className: "--final-approve",
+                                    id: row.Id,
+                                    data: data === 1 ? "เปิดใช้งาน" : "ปิดใช้งาน",
+                                    setColor: ["เปิดใช้งาน", "ปิดใช้งาน"],
+                                });
+                            },
+                            targets: 6,
+                        },
+                        {
+                            render: function (data, type, row) {
+                                console.log("can approve " + data);
+                                return editable({
+                                    className: "--can-approve",
+                                    id: row.Id,
+                                    data: data === 1 ? "ใช่" : "ไม่ใช่",
+                                    setColor: ["ใช่", "ไม่ใช่"],
+                                });
+                            },
+                            targets: 7,
+                        },
+                        {
+                            render: function (data, type, row) {
+                                return editable({
+                                    className: "--email-backup",
+                                    id: row.Id,
+                                    data: data,
+                                });
+                            },
+                            targets: 8,
+                        },
+                        {
+                            render: function (data, type, row) {
+                                return editable({
+                                    className: "--active",
+                                    id: row.Id,
+                                    data: data === 1 ? "เปิดใช้งาน" : "ปิดใช้งาน",
+                                    setColor: ["เปิดใช้งาน", "ปิดใช้งาน"],
+                                });
+                            },
+                            targets: 9,
+                        },
+                    ],
+                    fnDrawCallback: function (settings, json) {
+                        var activeData = [
+                            {
+                                Id: 0,
+                                Description: "ไม่เปิดใช้งาน",
+                            },
+                            {
+                                Id: 1,
+                                Description: "เปิดใช้งาน",
+                            },
+                        ];
+
+                        // active
+                        $("#gridFlow .--active").editable({
+                            mode: "inline",
+                            showbuttons: false,
+                            type: "select",
+                            name: "Active",
+                            url: "/Setup/UpdateApproveSetupGrid",
+                            source: editDropdown({
+                                data: activeData,
+                                id: "Id",
+                                value: "Description",
+                                defaultSelect: false,
+                            }),
+                            success: function (data) {
+                                reloadGrid("#gridFlow", true);
+                                if (data.Result === false) alert(data.Message);
+                            },
+                            error: function (data) {
+                                alert(data.responseText);
+                            },
+                        });
+
+                        // can approve
+                        $("#gridFlow .--can-approve").editable({
+                            mode: "inline",
+                            showbuttons: false,
+                            type: "select",
+                            name: "CanApprove",
+                            url: "/Setup/UpdateApproveSetupGrid",
+                            source: editDropdown({
+                                data: activeData,
+                                id: "Id",
+                                value: "Description",
+                                defaultSelect: false,
+                            }),
+                            success: function (data) {
+                                reloadGrid("#gridFlow", true);
+                                if (data.Result === false) alert(data.Message);
+                            },
+                            error: function (data) {
+                                alert(data.responseText);
+                            },
+                        });
+
+                        // email backup
+                        $("#gridFlow .--email-backup").editable({
+                            mode: "inline",
+                            showbuttons: false,
+                            type: "text",
+                            name: "EmailBackup",
+                            url: "/Setup/UpdateApproveSetupGrid",
+                            success: function (data) {
+                                reloadGrid("#gridFlow", true);
+                                if (data.Result === false) alert(data.Message);
+                            },
+                            error: function (data) {
+                                alert(data.responseText);
+                            },
+                        });
+
+                        // final approve
+                        $("#gridFlow .--final-approve").editable({
+                            mode: "inline",
+                            showbuttons: false,
+                            type: "select",
+                            name: "FinalApprove",
+                            url: "/Setup/UpdateApproveSetupGrid",
+                            source: editDropdown({
+                                data: activeData,
+                                id: "Id",
+                                value: "Description",
+                                defaultSelect: false,
+                            }),
+                            success: function (data) {
+                                reloadGrid("#gridFlow", true);
+                                if (data.Result === false) alert(data.Message);
+                            },
+                            error: function (data) {
+                                alert(data.responseText);
+                            },
+                        });
+
+                        // notify to
+                        $("#gridFlow .--notify-to").editable({
+                            mode: "inline",
+                            showbuttons: false,
+                            type: "select",
+                            name: "NotifyTo",
+                            url: "/Setup/UpdateApproveSetupGrid",
+                            source: editDropdown({
+                                data: activeData,
+                                id: "Id",
+                                value: "Description",
+                                defaultSelect: false,
+                            }),
+                            success: function (data) {
+                                reloadGrid("#gridFlow", true);
+                                if (data.Result === false) alert(data.Message);
+                            },
+                            error: function (data) {
+                                alert(data.responseText);
+                            },
+                        });
+
+                        // approve level
+                        $("#gridFlow .--approve-level").editable({
+                            mode: "inline",
+                            showbuttons: false,
+                            type: "text",
+                            name: "ApproveLevel",
+                            url: "/Setup/UpdateApproveSetupGrid",
+                            success: function (data) {
+                                reloadGrid("#gridFlow", true);
+                                if (data.Result === false) alert(data.Message);
+                            },
+                            error: function (data) {
+                                alert(data.responseText);
+                            },
+                        });
+
+                        // approve group
+                        ajax({
+                            url: "/Setup/GetApproveGroup",
+                            type: "get",
+                        }).done(function (response) {
+                            $("#gridFlow .--approve-group").editable({
+                                mode: "inline",
+                                showbuttons: false,
+                                type: "select",
+                                name: "ApproveGroup",
+                                url: "/Setup/UpdateApproveSetupGrid",
+                                source: editDropdown({
+                                    data: response,
+                                    id: "Id",
+                                    value: "Description",
+                                    defaultSelect: false,
+                                }),
+                                success: function (data) {
+                                    reloadGrid("#gridFlow", true);
+                                    if (data.Result === false) alert(data.Message);
+                                },
+                                error: function (data) {
+                                    alert(data.responseText);
+                                },
+                            });
+                        });
+                    },
+                });
+            });
+
+            _initial.then(function (data) {
+                loadGrid({
+                    el: "#gridApproveGroup",
+                    processing: false,
+                    serverSide: false,
+                    deferRender: true,
+                    searching: true,
+                    order: [],
+                    orderCellsTop: true,
+                    destroy: true,
+                    initComplete: function (settings, json) {
+                        return true;
+                    },
+                    select: {
+                        style: "single",
+                    },
+                    ajax: {
+                        url: "/Setup/GetApproveGroupGrid",
+                        method: "post",
+                    },
+                    columns: [
+                        { data: "Description" },
+                        { data: "Slug" }
+                    ],
+                    /*columnDefs: [
+                      {
+                        render: function(data, type, row) {
+                          return editable({
+                            className: "--class-name",
+                            id: row.Id,
+                            data: data,
+                          });
+                        },
+                        targets: 0,
+                      },
+                    ],*/
+                    fnDrawCallback: function (settings, json) { }
+                });
+            });
+
+            $("#btnChangeUser").on("click", function () {
+                var rowdata = getRowsSelected("#gridFlow");
+                if (rowdata.length > 0) {
+                    $("#modalSelectUserForChange").modal({ backdrop: "static" });
+
+                    loadGrid({
+                        el: "#gridUserChange",
+                        processing: true,
+                        serverSide: true,
+                        deferRender: true,
+                        searching: true,
+                        order: [],
+                        orderCellsTop: true,
+                        destroy: true,
+                        select: {
+                            style: "single",
+                        },
+                        ajax: {
+                            url: "/Setup/ChangeUserGrid",
+                            method: "post",
+                        },
+                        columns: [
+                            { data: "Username" },
+                            { data: "EmployeeId" },
+                            { data: "Name" },
+                            { data: "LastName" },
+                            { data: "DivisionName" },
+                            { data: "DepartmentName" },
+                            { data: "RoleName" },
+                            { data: "Company" },
+                            { data: "Active" },
+                            { data: "Remark" },
+                        ],
+                    });
+                } else {
+                    alert("กรุุณาเลือกรายการ");
+                }
+            });
+
+
+            $("#btnConfirmSelectUserForChange").on("click", function () {
+                var rowdata = getRowsSelected("#gridUserChange");
+                var rowdata_flow = getRowsSelected("#gridFlow");
+                if (rowdata.length > 0) {
+                    ajax({
+                        url: "/Setup/UpdateFlowUser",
+                        type: "post",
+                        data: {
+                            userId: rowdata[0].Id,
+                            id: rowdata_flow[0].Id,
+                        },
+                    }).done(function (response) {
+                        if (response.Result === true) {
+                            $("#modalSelectUserForChange").modal("hide");
+                            reloadGrid("#gridFlow");
+                        } else {
+                            alert(response.Message);
+                        }
+                    });
+
+                    $("#modalSelectUserForChange").modal("hide");
+                } else {
+                    alert("กรุณาเลือกข้อมูล");
+                }
+            });
+
+            $("#btnAddEmailFlow").on("click", function () {
+                $("#modalAddEmailFlow").modal({ backdrop: "static" });
+                $("#formAddFlowEmail").trigger("reset");
+
+                ajax({
+                    url: "/Setup/GetApproveGroup",
+                    type: "get",
+                    data: {},
+                }).done(function (response) {
+                    generateDropdown({
+                        selector: "select[name=GroupId]",
+                        data: response,
+                        id: "Id",
+                        value: "Description",
+                    });
+                });
+            });
+
+            $("#btnSelectUser").on("click", function () {
+                $("#modalSelectUser").modal({ backdrop: "static" });
+
+                loadGrid({
+                    el: "#gridUser",
+                    processing: true,
+                    serverSide: true,
+                    deferRender: true,
+                    searching: true,
+                    order: [],
+                    orderCellsTop: true,
+                    destroy: true,
+                    select: {
+                        style: "single",
+                    },
+                    ajax: {
+                        url: "/User/UserGrid",
+                        method: "post",
+                    },
+                    columns: [
+                        { data: "Username" },
+                        { data: "EmployeeId" },
+                        { data: "Name" },
+                        { data: "LastName" },
+                        { data: "DivisionName" },
+                        { data: "DepartmentName" },
+                        { data: "RoleName" },
+                        { data: "Company" },
+                        { data: "Active" },
+                        { data: "Remark" },
+                    ],
+                });
+            });
+
+            $("#btnConfirmSelectUser").on("click", function () {
+                var rowdata = getRowsSelected("#gridUser");
+                if (rowdata.length > 0) {
+                    $("input[name=UserId]").val(rowdata[0].Id);
+                    $("input[name=User]").val(rowdata[0].Name + " " + rowdata[0].LastName);
+
+                    $("#modalSelectUser").modal("hide");
+                } else {
+                    alert("กรุณาเลือกข้อมูล");
+                }
+            });
+
+            $("#formAddFlowEmail").on("submit", function (e) {
+                e.preventDefault();
+
+                ajax({
+                    url: "/Setup/AddFlowApprove",
+                    type: "post",
+                    data: $("#formAddFlowEmail").serialize(),
+                }).done(function (response) {
+                    if (response.Result === true) {
+                        $("#modalAddEmailFlow").modal("hide");
+                        reloadGrid("#gridFlow");
+                    } else {
+                        alert(response.Message);
+                    }
+                });
+            });
+        }); // end
+    </script>
+}

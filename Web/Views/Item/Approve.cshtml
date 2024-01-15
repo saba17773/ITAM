@@ -1,0 +1,89 @@
+@{ 
+  ViewData["Title"] = "Approve Item"; 
+  string email  = ViewData["email"] as string;
+  string nonce = ViewData["nonce"] as string;
+}
+
+<div class="box box-primary">
+  <div class="box-header with-border">
+    <h3 class="box-title">Approve Item</h3>
+  </div>
+  <div class="box-body">
+    <form id="formApproveItem" method="post" asp-controller="Item" asp-action="ApproveSubmit">
+      <div class="table-responsive">
+        <table class="table table-striped table-bordered table-hover table-condensed table-nowrap">
+          <thead>
+            <tr>
+              <th>Item Group</th>
+              <th>Unit</th>
+              <th>Product Group</th>
+              <th>Sub Group</th>
+              <th>Item Id</th>
+              <th>item Name</th>
+              <th>Remark</th>
+              <th>Approve</th>
+              <th>Message</th>
+            </tr>
+          </thead>
+          <tbody>
+          @foreach (var item in (ViewData["approveLists"] as List<ApproveListsModel>))
+          {
+            <tr>
+              <td>@item.ItemGroup</td>
+              <td>@item.Unit</td>
+              <td>@item.ProductGroup</td>
+              <td>@item.SubGroup</td>
+              <td>@item.ItemId</td>
+              <td>@item.ItemName</td>
+              <td>@item.Remark</td>
+              <td>
+                <select name="approve_@item.Id" class="form-control">
+                  <option value="">- เลือก -</option>
+                  <option value="1">อนุมัติ</option>
+                  <option value="2">ไม่อนุมัติ</option>
+                </select> 
+              </td>
+              <td>
+                <input type="text" class="form-control" name="message_@item.Id" />
+              </td>
+            </tr>
+          }
+          </tbody>
+        </table>
+      </div>
+      <input type="hidden" name="nonce" value="@nonce" />
+      <input type="hidden" name="email" value="@email" />
+      <div class="btn-panel pull-right">
+        <button class="btn btn-danger" type="reset">
+          <i class="fa fa-times"></i>
+          Clear
+        </button>
+        <button class="btn btn-success" type="submit">
+          <i class="fa fa-check"></i>
+          Submit
+        </button>
+      </div>
+    </form>
+  </div>
+</div>
+
+@section Scripts {
+<script>
+  $(document).ready(function() {
+    // script here.
+
+    $("#formApproveItem").on("submit", function(e) {
+      //e.preventDefault();
+      $("body").block();
+      // ajax({
+      //   url: "/Item/ApproveSubmit",
+      //   type: "post",
+      //   data: $("#formApproveItem").serialize()
+      // }).done(function(response) {
+      //   $("body").unblock();
+      //   console.log(response);
+      // });
+    });
+  });
+</script>
+}

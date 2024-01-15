@@ -1,0 +1,85 @@
+@using Web.Domain.Services
+@inject IUserService userService
+
+<aside class="main-sidebar">
+  <section class="sidebar">
+    <ul class="sidebar-menu" data-widget="tree">
+      @if (Context.User.Identity.IsAuthenticated)
+      {
+        @if (userService.CanDisplay("menu-dashboard"))
+        {
+          <li>
+            <a asp-controller="Home" asp-action="Dashboard">
+              <i class="fa fa-home"></i>
+              <span>Dashboard</span>
+            </a>
+          </li>
+        }
+
+        @if (userService.CanDisplay("menu-user-management"))
+        {
+          <li>
+            <a asp-controller="User" asp-action="Index">
+              <i class="fa fa-users"></i>
+              <span>User Management</span>
+            </a>
+          </li>
+        }
+
+        @if (userService.CanDisplay("item"))
+        {
+          <li>
+            <a asp-controller="Item" asp-action="Index">
+              <i class="fa fa-list"></i>
+              <span>Request Item</span>
+            </a>
+          </li>
+        }
+
+        @if (userService.CanDisplay("setup"))
+        {
+          <li>
+            <a asp-controller="Setup" asp-action="Index">
+              <i class="fa fa-cog"></i>
+              <span>Approve Setup</span>
+            </a>
+          </li>
+        }
+      }
+
+      <li>
+        <a asp-controller="Item" asp-action="ItemAx">
+          <i class="fa fa-list"></i>
+          <span>Item Ax</span>
+        </a>
+      </li>
+
+      @if (userService.CanDisplay("menu-part-master"))
+      {
+      <li>
+        <a asp-controller="PartMaster" asp-action="Index">
+          <i class="fa fa-list"></i>
+          <span>Part Master</span>
+        </a>
+      </li>
+      }
+
+      @if (Context.User.Identity.IsAuthenticated == false)
+      {
+        <li>
+          <a asp-controller="User" asp-action="Login">
+            <i class="fa fa-sign-in"></i>
+            <span>Login</span>
+          </a>
+        </li>
+        <li>
+          <a href="http://www.deestonegrp.com/site2/it/it_login/system_login.php">
+            <i class="fa fa-question"></i>
+            <span>Request User</span>
+          </a>
+        </li>
+      }
+      
+    </ul>
+  </section>
+</aside>

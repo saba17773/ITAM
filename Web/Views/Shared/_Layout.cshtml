@@ -1,0 +1,47 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>@ViewData["Title"] - Web</title>
+  <link rel="stylesheet" href="~/lib/bootstrap3/css/bootstrap.min.css" />
+  <link rel="stylesheet" href="~/lib/adminlte/dist/css/AdminLTE.min.css" />
+  <link rel="stylesheet" href="~/lib/adminlte/dist/css/skins/skin-black.min.css" />
+  <link rel="stylesheet" href="~/lib/font-awesome/css/font-awesome.min.css" />
+  <link rel="stylesheet" href="~/lib/bootstrap3-editable-1.5.1/bootstrap3-editable/css/bootstrap-editable.css" />
+  <link rel="stylesheet" href="~/lib/datatables/datatables.min.css" />
+  <link rel="stylesheet" href="~/lib/datatables-ext/datatables-ext.css" />
+  <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+
+  <!--[if lt IE 9]>
+  <script src="~/lib/polyfill/html5shiv.min.js"></script>
+  <script src="~/lib/polyfill/respond.min.js"></script>
+  <![endif]-->
+</head>
+<body class="hold-transition skin-black sidebar-mini">
+  <div class="wrapper">
+    <partial name="~/Views/Partials/_Header.cshtml" />
+    <partial name="~/Views/Partials/_Sidebar.cshtml" />
+    <div class="content-wrapper">
+      <section class="content">
+        <partial name="~/Views/Partials/_FlashMessage.cshtml" />
+        @RenderBody()
+      </section>
+    </div>
+    <partial name="~/Views/Partials/_Footer.cshtml" />
+  </div>
+
+  <script src="~/lib/jquery/dist/jquery.min.js"></script>
+  <script src="~/lib/bootstrap3/js/bootstrap.min.js"></script>
+  <script src="~/lib/adminlte/dist/js/AdminLTE.min.js"></script>
+  <script src="~/lib/dayjs/dayjs.min.js"></script>
+  <script src="~/lib/bluebird/bluebird.min.js"></script>
+  <script src="~/lib/blockui/jquery.blockUI.js"></script>
+  <script src="~/lib/datatables/datatables.min.js"></script>
+  <script src="~/lib/datatables-ext/datatables-ext.js"></script>
+  <script src="~/lib/bootstrap3-editable-1.5.1/bootstrap3-editable/js/bootstrap-editable.min.js"></script>
+  <script src="~/js/site.js" asp-append-version="true"></script>
+  
+  @RenderSection("Scripts", required: false)
+</body>
+</html>

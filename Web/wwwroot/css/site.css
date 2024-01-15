@@ -1,0 +1,59 @@
+﻿.navbar-custom-menu > .navbar-nav > li > .dropdown-menu {
+  position: absolute;
+  right: 0%;
+  left: auto;
+  border: 1px solid #ddd;
+  background: #fff;
+  max-width: 200px;
+  border: 1px solid #eeeeee;
+  padding: 5px 0px;
+}
+
+.scroll-x {
+  overflow-x: scroll;
+}
+
+.scroll-y {
+  overflow-y: scroll;
+}
+
+.bs-callout {
+  padding: 20px;
+  margin: 0 0 15px 0;
+  border: 1px solid #eee;
+  border-left-color: rgb(238, 238, 238);
+  border-left-width: 1px;
+  border-left-width: 5px;
+  border-radius: 3px;
+  background: white;
+}
+
+.bs-callout-danger {
+  border-left-color: #ce4844;
+}
+
+.bs-callout-info {
+  border-left-color: #1b809e;
+}
+
+.bs-callout-success {
+  border-left-color: #00a65a;
+}
+
+.btn-panel-group button {
+  margin-right: 3px;
+  margin-bottom: 5px;
+}
+
+.btn-panel {
+  margin: 5px;
+}
+
+.btn-panel button {
+  margin-right: 5px;
+  margin-bottom: 3px;
+}
+
+.modal {
+  overflow: auto !important;
+}

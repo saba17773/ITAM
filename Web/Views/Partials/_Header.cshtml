@@ -1,0 +1,48 @@
+@using Web.Domain.Services
+@inject IUserService userService
+
+<header class="main-header">
+  <a href="/" class="logo">
+    <span class="logo-mini"
+      ><img class="logo-lg logo-center" src="~/images/logo.png" alt="logo"
+    /></span>
+    <span class="logo-lg"
+      ><img class="logo-lg logo-center" src="~/images/logo.png" alt="logo"
+    /></span>
+  </a>
+  
+  <nav class="navbar navbar-static-top" role="navigation">
+    <a href="javascript:void(0);" class="sidebar-toggle" data-toggle="push-menu" role="button">
+      <span class="sr-only">Toggle navigation</span>
+    </a>
+    <div class="navbar-custom-menu">
+      <ul class="nav navbar-nav">
+        @if (Context.User.Identity.IsAuthenticated)
+        {
+          <li class="dropdown user user-menu">
+            <a href="javascript:void(0);" class="dropdown-toggle" data-toggle="dropdown">
+              <img src="~/images/avatar.png" class="user-image" alt="User Image" />
+              <span class="hidden-xs">
+                @userService.GetClaim().Username
+              </span>
+            </a>
+            <ul class="dropdown-menu">
+              <li>
+                <a asp-controller="User" asp-action="ChangePassword">
+                  <i class="fa fa-refresh"></i>
+                  Change Password
+                </a>
+              </li>
+              <li>
+                <a asp-controller="User" asp-action="Logout">
+                  <i class="fa fa-sign-out"></i>
+                  Logout
+                </a>
+              </li>
+            </ul>
+          </li>
+        }
+      </ul>
+    </div>
+  </nav>
+</header>

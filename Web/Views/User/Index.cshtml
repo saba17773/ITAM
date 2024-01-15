@@ -1,0 +1,1115 @@
+@using Web.Domain.Services 
+@inject IUserService userService 
+@{ ViewData["Title"] = "User"; }
+
+<div class="nav-tabs-custom">
+  <ul class="nav nav-tabs">
+    <li class="active">
+      <a href="#tab_1" data-toggle="tab">User Management</a>
+    </li>
+    <li>
+      <a href="#tab_2" data-toggle="tab">Role</a>
+    </li>
+    <li>
+      <a href="#tab_3" data-toggle="tab">Capability</a>
+    </li>
+  </ul>
+  <div class="tab-content scroll-x">
+    <div class="tab-pane active" id="tab_1">
+      <div class="btn-panel-group">
+        <button class="btn btn-success" id="btnAddUser">
+          <i class="fa fa-plus"></i>
+          Add User
+        </button>
+
+        <button class="btn btn-default" id="btnResetPassword">
+          <i class="fa fa-refresh"></i>
+          Reset Password
+        </button>
+      </div>
+
+      <table
+        id="gridUser"
+        class="table table-striped table-bordered table-hover table-condensed table-nowrap"
+        style="width:100%;"
+      >
+        <thead>
+          <tr>
+            <th>Username</th>
+            <th>Employee Id</th>
+            <th>Name</th>
+            <th>Lastname</th>
+            <th>Division</th>
+            <th>Department</th>
+            <th>Role</th>
+            <th>Email</th>
+            <th>Company</th>
+            <th>Active</th>
+            <th>Remark</th>
+          </tr>
+          <tr>
+            <th>Username</th>
+            <th>Employee Id</th>
+            <th>Name</th>
+            <th>Lastname</th>
+            <th>Division</th>
+            <th>Department</th>
+            <th>Role</th>
+            <th>Email</th>
+            <th>Company</th>
+            <th>Active</th>
+            <th>Remark</th>
+          </tr>
+        </thead>
+      </table>
+    </div>
+    <div class="tab-pane" id="tab_2">
+      <div class="btn-panel-group">
+        <button class="btn btn-success" id="btnAddRole">
+          <i class="fa fa-plus"></i> Add Role
+        </button>
+        <button class="btn btn-default" id="btnViewCapability">
+          <i class="fa fa-cog"></i> Manage Capability
+        </button>
+      </div>
+
+      <table
+        id="gridRole"
+        class="table table-striped table-bordered table-hover table-condensed table-nowrap"
+        style="width:100%;"
+      >
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th>Description</th>
+            <th>Active</th>
+          </tr>
+          <tr>
+            <th>Name</th>
+            <th>Description</th>
+            <th>Active</th>
+          </tr>
+        </thead>
+      </table>
+    </div>
+    <div class="tab-pane" id="tab_3">
+      <div class="btn-panel-group">
+        <button class="btn btn-success" id="btnAddCapability">
+          <i class="fa fa-plus"></i> Add Capability
+        </button>
+      </div>
+
+      <table
+        id="gridCapability"
+        class="table table-striped table-bordered table-hover table-condensed table-nowrap"
+        style="width:100%;"
+      >
+        <thead>
+          <tr>
+            <th>Id</th>
+            <th>Description</th>
+            <th>Slug</th>
+          </tr>
+          <tr>
+            <th>Id</th>
+            <th>Description</th>
+            <th>Slug</th>
+          </tr>
+        </thead>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- modal add user -->
+<div class="modal" id="modalAddUser" tabindex="-1" role="dialog">
+  <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button
+          href="javascript.void(0);"
+          class="btn btn-danger pull-right"
+          data-dismiss="modal"
+          aria-label="Close"
+        >
+          <i class="fa fa-times"></i>
+        </button>
+        <h4 class="modal-title">Add User</h4>
+      </div>
+      <div class="modal-body">
+        <form id="formAddUser">
+          <div class="row">
+            <div class="col-md-4">
+              <div class="form-group">
+                <label for="EmployeeId" class="input-require">
+                  Employee Id
+                </label>
+                <div class="input-group">
+                  <input
+                    type="text"
+                    name="EmployeeId"
+                    id="EmployeeId"
+                    class="form-control"
+                    required
+                  />
+                  <span class="input-group-btn">
+                    <button
+                      class="btn btn-primary"
+                      id="btnSearchEmployee"
+                      type="button"
+                    >
+                      <i class="fa fa-search"></i>
+                      Search
+                    </button>
+                  </span>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-4">
+              <div class="form-group">
+                <label for="Username" class="input-require">Username</label>
+                <input
+                  type="text"
+                  name="Username"
+                  id="Username"
+                  class="form-control"
+                  required
+                />
+              </div>
+            </div>
+            <div class="col-md-4">
+              <div class="form-group">
+                <label for="Password" class="input-require">Password</label>
+                <input
+                  type="password"
+                  name="Password"
+                  id="Password"
+                  class="form-control"
+                  required
+                />
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-4">
+              <div class="form-group">
+                <label for="FirstName">First Name</label>
+                <input
+                  type="text"
+                  name="FirstName"
+                  id="FirstName"
+                  class="form-control"
+                  readonly
+                />
+              </div>
+            </div>
+            <div class="col-md-4">
+              <div class="form-group">
+                <label for="LastName">Last Name</label>
+                <input
+                  type="text"
+                  name="LastName"
+                  id="LastName"
+                  class="form-control"
+                  readonly
+                />
+              </div>
+            </div>
+            <div class="col-md-4">
+              <div class="form-group">
+                <label for="Email">Email</label>
+                <input
+                  type="email"
+                  name="Email"
+                  id="Email"
+                  class="form-control"
+                />
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-6">
+              <div class="form-group">
+                <label for="Role" class="input-require">Role</label>
+                <select
+                  name="RoleId"
+                  id="RoleId"
+                  class="form-control"
+                  required
+                ></select>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="form-group">
+                <label for="Active">Active</label>
+                <select name="Active" id="Active" class="form-control" required>
+                </select>
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-12">
+              <div class="form-group">
+                <label for="Remark">Remark</label>
+                <textarea
+                  name="Remark"
+                  id="Remark"
+                  cols="30"
+                  rows="5"
+                  class="form-control"
+                ></textarea>
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-12">
+              @Html.AntiForgeryToken()
+              <button type="submit" class="btn btn-success">
+                <i class="fa fa-check"></i>
+                Submit
+              </button>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- modal view employee -->
+<div class="modal" id="modalSearchEmployee" tabindex="-1" role="dialog">
+  <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button
+          href="javascript.void(0);"
+          class="btn btn-danger pull-right"
+          data-dismiss="modal"
+          aria-label="Close"
+        >
+          <i class="fa fa-times"></i>
+        </button>
+        <h4 class="modal-title">Employee</h4>
+      </div>
+      <div class="modal-body scroll-x">
+        <div class="btn-panel-group">
+          <button class="btn btn-primary" id="btnSelectEmployee">
+            Select Employee
+          </button>
+        </div>
+
+        <!-- Table -->
+        <table
+          id="gridEmployee"
+          class="table table-striped table-bordered table-hover table-condensed table-nowrap"
+          style="width:100%;"
+        >
+          <thead>
+            <tr>
+              <th>Employee Id</th>
+              <th>Name</th>
+              <th>Lastname</th>
+              <th>Company</th>
+              <th>Position</th>
+              <th>Division</th>
+              <th>Department</th>
+              <th>Old Employee Id</th>
+              <th>Email</th>
+            </tr>
+            <tr>
+              <th>Employee Id</th>
+              <th>Name</th>
+              <th>Lastname</th>
+              <th>Company</th>
+              <th>Position</th>
+              <th>Division</th>
+              <th>Department</th>
+              <th>Old Employee Id</th>
+              <th>Email</th>
+            </tr>
+          </thead>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- modal reset password -->
+<div class="modal" id="modalResetPassword" tabindex="-1" role="dialog">
+  <div class="modal-dialog modal-md" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button
+          href="javascript.void(0);"
+          class="btn btn-danger pull-right"
+          data-dismiss="modal"
+          aria-label="Close"
+        >
+          <i class="fa fa-times"></i>
+        </button>
+        <h4 class="modal-title">Reset Password</h4>
+      </div>
+      <div class="modal-body">
+        <form id="formResetPassword">
+          <div class="form-group">
+            <label for="NewPassword">New Password</label>
+            <input type="password" name="NewPassword" class="form-control" />
+          </div>
+          <div class="form-group">
+            <label for="ConfirmNewPassword">Confirm New Password</label>
+            <input
+              type="password"
+              name="ConfirmNewPassword"
+              class="form-control"
+            />
+          </div>
+          <div class="form-group">
+            @Html.AntiForgeryToken()
+            <input type="hidden" name="UserId" />
+            <button type="submit" class="btn btn-success">
+              <i class="fa fa-check"></i> Submit
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- modal add role -->
+<div class="modal" id="modalAddRole" tabindex="-1" role="dialog">
+  <div class="modal-dialog modal-md" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button
+          href="javascript.void(0);"
+          class="btn btn-danger pull-right"
+          data-dismiss="modal"
+          aria-label="Close"
+        >
+          <i class="fa fa-times"></i>
+        </button>
+        <h4 class="modal-title">Add Role</h4>
+      </div>
+      <div class="modal-body">
+        <form id="formAddRole">
+          <div class="form-group">
+            <label for="RoleDescription">Description</label>
+            <input
+              type="text"
+              name="RoleDescription"
+              id="RoleDescription"
+              class="form-control"
+              required
+            />
+          </div>
+          <div class="form-group">
+            <button type="submit" class="btn btn-success">
+              <i class="fa fa-check"></i> Submit
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- modal view capability -->
+<div class="modal" id="modalViewCapability" tabindex="-1" role="dialog">
+  <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button
+          href="javascript.void(0);"
+          class="btn btn-danger pull-right"
+          data-dismiss="modal"
+          aria-label="Close"
+        >
+          <i class="fa fa-times"></i>
+        </button>
+        <h4 class="modal-title">
+          Manage Capability For <span id="displayRoleName"></span>
+        </h4>
+      </div>
+      <div class="modal-body">
+        <table
+          id="gridPermission"
+          class="table table-striped table-bordered table-hover table-condensed table-nowrap"
+          style="width:100%;"
+        >
+          <thead>
+            <tr>
+              <th>Id</th>
+              <th>Capability</th>
+              <th>Slug</th>
+              <th>Added</th>
+            </tr>
+            <tr>
+              <th>Id</th>
+              <th>Capability</th>
+              <th>Slug</th>
+              <th>Added</th>
+            </tr>
+          </thead>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- modal view employee -->
+<div class="modal" id="modalAddCapability" tabindex="-1" role="dialog">
+  <div class="modal-dialog modal-md" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button
+          href="javascript.void(0);"
+          class="btn btn-danger pull-right"
+          data-dismiss="modal"
+          aria-label="Close"
+        >
+          <i class="fa fa-times"></i>
+        </button>
+        <h4 class="modal-title">Add Capability</h4>
+      </div>
+      <div class="modal-body">
+        <form id="formAddCapability">
+          <div class="form-group">
+            <label for="CapabilityDescription">Description</label>
+            <input
+              type="text"
+              name="CapabilityDescription"
+              id="CapabilityDescription"
+              class="form-control"
+              required
+              autocomplete="off"
+            />
+          </div>
+          <div class="form-group">
+            <label for="Slug">Slug</label>
+            <input
+              type="text"
+              name="Slug"
+              id="Slug"
+              class="form-control"
+              autocomplete="off"
+              readonly
+            />
+          </div>
+          <button type="submit" class="btn btn-success">
+            <i class="fa fa-check"></i>
+            Submit
+          </button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+@section Scripts {
+<script>
+  $(document).ready(function() {
+    // add new user
+    $("#btnAddUser").on("click", function() {
+      $("#formAddUser").trigger("reset");
+      $("#modalAddUser").modal({ backdrop: "static" });
+
+      var _loadDataForm = new Promise(function(resolve, reject) {
+        ajax({
+          url: "/Role/GetRoleAllActive",
+          type: "get",
+        }).done(function(data) {
+          generateDropdown({
+            selector: "select#RoleId",
+            data: data,
+            id: "Id",
+            value: "Description",
+          });
+
+          resolve(true);
+        });
+      });
+
+      _loadDataForm.then(function(result) {
+        ajax({
+          url: "/Status/GetStatusAll",
+          type: "get",
+        }).done(function(data) {
+          generateDropdown({
+            selector: "select#Active",
+            data: data,
+            id: "Id",
+            value: "Description",
+          });
+        });
+      });
+
+      // end
+    });
+
+    // form add user
+    $("#formAddUser").on("submit", function(e) {
+      e.preventDefault();
+      ajax({
+        url: "/User/AddUser",
+        type: "post",
+        data: $("#formAddUser").serialize(),
+      }).done(function(data) {
+        if (data.Result === true) {
+          $("#formAddUser").trigger("reset");
+          $("#modalAddUser").modal("hide");
+          reloadGrid("#gridUser");
+          alert(data.Message);
+        } else {
+          alert(data.Message);
+        }
+      });
+    });
+
+    // search employee
+    $("#btnSearchEmployee").on("click", function() {
+      $("#modalSearchEmployee").modal({ backdrop: "static" });
+
+      // load employee grid
+      loadGrid({
+        el: "#gridEmployee",
+        processing: false,
+        serverSide: false,
+        deferRender: true,
+        searching: true,
+        order: [],
+        orderCellsTop: true,
+        destroy: true,
+        select: {
+          style: "single",
+        },
+        ajax: {
+          url: "/Employee/GetEmployeeAll",
+          method: "post",
+        },
+        columns: [
+          { data: "EmployeeId" },
+          { data: "Name" },
+          { data: "LastName" },
+          { data: "Company" },
+          { data: "PositionName" },
+          { data: "DivisionName" },
+          { data: "DepartmentName" },
+          { data: "EmployeeIdOld" },
+          { data: "Email" },
+        ],
+      });
+    });
+
+    // select employee
+    $("#btnSelectEmployee").on("click", function() {
+      var rowdata = getRowsSelected("#gridEmployee");
+      if (rowdata.length > 0) {
+        $("input[name=EmployeeId]").val(rowdata[0].EmployeeId);
+        $("input[name=Username]").val(rowdata[0].EmployeeId);
+        $("input[name=FirstName]").val(rowdata[0].Name);
+        $("input[name=LastName]").val(rowdata[0].LastName);
+        $("input[name=Email]").val(rowdata[0].Email);
+
+        $("#modalSearchEmployee").modal("hide");
+      } else {
+        alert("Found " + rowdata.length + " records.");
+      }
+    });
+
+    // reset password
+    $("#btnResetPassword").on("click", function() {
+      var rowdata = getRowsSelected("#gridUser");
+      if (rowdata.length > 0) {
+        $("#formResetPassword").trigger("reset");
+        $("#modalResetPassword").modal({ backdrop: "static" });
+        $("input[name=UserId]").val(rowdata[0].Id);
+      } else {
+        alert("Please select data!");
+      }
+    });
+
+    // submit reset password
+    $("#formResetPassword").on("submit", function(e) {
+      e.preventDefault();
+      ajax({
+        url: "/User/ResetPassword",
+        type: "post",
+        data: $("#formResetPassword").serialize(),
+      }).done(function(data) {
+        if (data.Result === true) {
+          $("#modalResetPassword").modal("hide");
+        }
+        alert(data.Message);
+      });
+    });
+
+    // add role
+    $("#btnAddRole").on("click", function() {
+      $("#formAddRole").trigger("reset");
+      $("#modalAddRole").modal({ backdrop: "static" });
+    });
+
+    // submit add role
+    $("#formAddRole").on("submit", function(e) {
+      e.preventDefault();
+      ajax({
+        url: "/Role/AddRole",
+        type: "post",
+        data: $("#formAddRole").serialize(),
+      }).done(function(data) {
+        if (data.Result === true) {
+          $("#modalAddRole").modal("hide");
+          reloadGrid("#gridRole");
+          reloadGrid("#gridUser");
+        }
+        alert(data.Message);
+      });
+    });
+
+    // view capability
+    $("#btnViewCapability").on("click", function() {
+      var rowdata = getRowsSelected("#gridRole");
+      if (rowdata.length > 0) {
+        $("#modalViewCapability").modal({ backdrop: "static" });
+        $("#displayRoleName").html("<b>" + rowdata[0].Description + "</b>");
+
+        // load permission grid
+        loadGrid({
+          el: "#gridPermission",
+          processing: false,
+          serverSide: false,
+          deferRender: true,
+          searching: true,
+          order: [],
+          orderCellsTop: true,
+          destroy: true,
+          ajax: {
+            url: "/Permission/GetPermission",
+            method: "post",
+            data: {
+              roleId: rowdata[0].Id,
+            },
+          },
+          columns: [
+            { data: "Id" },
+            { data: "Capability" },
+            { data: "Slug" },
+            { data: "RoleId" },
+          ],
+          columnDefs: [
+            {
+              render: function(data, type, row) {
+                var c = data;
+                if (c === 0) {
+                  return (
+                    '<div class="text-center text-danger" style="cursor: pointer;" onclick="updatePermission(' +
+                    row.Id +
+                    "," +
+                    rowdata[0].Id +
+                    ')"><i class="fa fa-check"></i> ไม่ได้ใช้งาน</div>'
+                  );
+                } else {
+                  return (
+                    '<div class="text-center text-success" style="cursor: pointer;" onclick="updatePermission(' +
+                    row.Id +
+                    "," +
+                    rowdata[0].Id +
+                    ')"><i class="fa fa-check"></i> ใช้งานอยู่</div>'
+                  );
+                }
+              },
+              targets: 3,
+            },
+          ],
+        });
+      } else {
+        alert("Please select data.");
+      }
+    });
+
+    // add capability
+    $("#btnAddCapability").on("click", function() {
+      $("#formAddCapability").trigger("reset");
+      $("#modalAddCapability").modal({ backdrop: "static" });
+    });
+
+    // submit from add capability
+    $("#formAddCapability").on("submit", function(e) {
+      e.preventDefault();
+      ajax({
+        url: "/Capability/AddCapability",
+        type: "post",
+        data: $("#formAddCapability").serialize(),
+      }).done(function(data) {
+        if (data.Result === true) {
+          $("#modalAddCapability").modal("hide");
+          reloadGrid("#gridCapability");
+        }
+        alert(data.Message);
+      });
+    });
+
+    // generate slug
+    $("input[name=CapabilityDescription]").on("keyup", function(e) {
+      $("input[name=Slug]").val(slugify(e.target.value));
+    });
+
+    // load grid
+    var _loadGrid = new Promise(function(resolve, reject) {
+      // load user grid
+      loadGrid({
+        el: "#gridUser",
+        processing: true,
+        serverSide: true,
+        deferRender: true,
+        searching: true,
+        order: [],
+        orderCellsTop: true,
+        destroy: true,
+        select: {
+          style: "single",
+        },
+        ajax: {
+          url: "/User/UserGrid",
+          method: "post",
+        },
+        initComplete: function() {
+          resolve(true);
+        },
+        columns: [
+          { data: "Username" },
+          { data: "EmployeeId" },
+          { data: "Name" },
+          { data: "LastName" },
+          { data: "DivisionName" },
+          { data: "DepartmentName" },
+          { data: "RoleName" },
+          { data: "Email" },
+          { data: "Company"},
+          { data: "Active" },
+          { data: "Remark" }
+        ],
+        columnDefs: [
+          {
+            render: function(data, type, row) {
+              return editable({
+                className: "--employee-id",
+                id: row.Id,
+                data: data,
+              });
+            },
+            targets: 1,
+          },
+          {
+            render: function(data, type, row) {
+              return editable({
+                className: "--user-email",
+                id: row.Id,
+                data: data,
+              });
+            },
+            targets: 7,
+          },
+          {
+            render: function(data, type, row) {
+              return editable({
+                className: "--user-active",
+                id: row.Id,
+                data: data,
+              });
+            },
+            targets: 9,
+          },
+          {
+            render: function(data, type, row) {
+              return editable({
+                className: "--user-remark",
+                id: row.Id,
+                data: data,
+              });
+            },
+            targets: 10,
+          },
+          {
+            render: function(data, type, row) {
+              return editable({
+                className: "--user-role",
+                id: row.Id,
+                data: data,
+              });
+            },
+            targets: 6,
+          },
+        ],
+        fnDrawCallback: function(settings, json) {
+          // employee id
+          $("#gridUser .--employee-id").editable({
+            mode: "inline",
+            showbuttons: false,
+            type: "text",
+            name: "EmployeeId",
+            url: "/User/UpdateUserGrid",
+            success: function(data) {
+              reloadGrid("#gridUser", true);
+              if (data.Result === false) alert(data.Message);
+            },
+            error: function(err) {
+              alert(err.responseText);
+            },
+          });
+
+          // user active
+          ajax({
+            url: "/Status/GetStatusAll",
+            type: "get",
+          }).done(function(status) {
+            $("#gridUser .--user-active").editable({
+              mode: "inline",
+              showbuttons: false,
+              type: "select",
+              name: "Active",
+              url: "/User/UpdateUserGrid",
+              source: editDropdown({
+                data: status,
+                id: "Id",
+                value: "Description",
+                defaultSelect: false,
+              }),
+              success: function(data) {
+                reloadGrid("#gridUser", true);
+                if (data.Result === false) alert(data.Message);
+              },
+              error: function(data) {
+                alert(data.responseText);
+              },
+            });
+          });
+
+          // user remark
+          $("#gridUser .--user-remark").editable({
+            mode: "inline",
+            showbuttons: false,
+            type: "text",
+            name: "Remark",
+            url: "/User/UpdateUserGrid",
+            success: function(data) {
+              reloadGrid("#gridUser", true);
+              if (data.Result === false) alert(data.Message);
+            },
+            error: function(data) {
+              alert(data.responseText);
+            },
+          });
+
+          // user emailz
+          $("#gridUser .--user-email").editable({
+            mode: "inline",
+            showbuttons: false,
+            type: "text",
+            name: "Email",
+            url: "/User/UpdateUserGrid",
+            success: function(data) {
+              reloadGrid("#gridUser", true);
+              if (data.Result === false) alert(data.Message);
+            },
+            error: function(data) {
+              alert(data.responseText);
+            },
+          });
+
+          // user role
+          ajax({
+            url: "/Role/GetRoleAllActive",
+            type: "get",
+          }).done(function(role) {
+            $("#gridUser .--user-role").editable({
+              mode: "inline",
+              showbuttons: false,
+              type: "select",
+              name: "RoleId",
+              url: "/User/UpdateUserGrid",
+              source: editDropdown({
+                data: role,
+                id: "Id",
+                value: "Description",
+                defaultSelect: false,
+              }),
+              success: function(data) {
+                reloadGrid("#gridUser", true);
+                if (data.Result === false) alert(data.Message);
+              },
+              error: function(data) {
+                alert(data.responseText);
+              },
+            });
+          });
+        },
+      });
+    });
+
+    _loadGrid.then(function(result) {
+      // load role grid
+      loadGrid({
+        el: "#gridRole",
+        processing: false,
+        serverSide: false,
+        deferRender: true,
+        searching: true,
+        order: [],
+        orderCellsTop: true,
+        destroy: true,
+        select: {
+          style: "single",
+        },
+        ajax: {
+          url: "/Role/GetRoleAllGrid",
+          method: "post",
+        },
+        initComplete: function() {
+          return true;
+        },
+        fnDrawCallback: function(settings, json) {
+          // role description
+          $("#gridRole .--role-description").editable({
+            mode: "inline",
+            showbuttons: false,
+            type: "text",
+            name: "Description",
+            url: "/Role/UpdateRoleGrid",
+            success: function(data) {
+              reloadGrid("#gridRole", true);
+              if (data.Result === false) alert(data.Message);
+            },
+            error: function(err) {
+              alert(err.responseText);
+            },
+          });
+
+          // role active
+          ajax({
+            url: "/Status/GetStatusAll",
+            type: "get",
+          }).done(function(status) {
+            $("#gridRole .--role-active").editable({
+              mode: "inline",
+              showbuttons: false,
+              type: "select",
+              name: "Active",
+              url: "/Role/UpdateRoleGrid",
+              source: editDropdown({
+                data: status,
+                id: "Id",
+                value: "Description",
+                defaultSelect: false,
+              }),
+              success: function(data) {
+                reloadGrid("#gridRole", true);
+                reloadGrid("#gridUser", true);
+                if (data.Result === false) alert(data.Message);
+              },
+              error: function(data) {
+                alert(data.responseText);
+              },
+            });
+          });
+
+          // End
+        },
+        columns: [{ data: "Id" }, { data: "Description" }, { data: "Active" }],
+        columnDefs: [
+          {
+            render: function(data, type, row) {
+              return editable({
+                className: "--role-description",
+                id: row.Id,
+                data: data,
+              });
+            },
+            targets: 1,
+          },
+          {
+            render: function(data, type, row) {
+              return editable({
+                className: "--role-active",
+                id: row.Id,
+                data: data,
+              });
+            },
+            targets: 2,
+          },
+        ],
+      });
+    });
+
+    _loadGrid.then(function(result) {
+      // load grid capability
+      loadGrid({
+        el: "#gridCapability",
+        processing: false,
+        serverSide: false,
+        deferRender: true,
+        searching: true,
+        order: [],
+        orderCellsTop: true,
+        destroy: true,
+        select: {
+          style: "single",
+        },
+        ajax: {
+          url: "/Capability/GetCapabilityAllGrid",
+          method: "post",
+        },
+        fnDrawCallback: function(settings, json) {
+          // update description
+          $("#gridCapability .--capability-description").editable({
+            mode: "inline",
+            showbuttons: false,
+            type: "text",
+            name: "Description",
+            url: "/Capability/UpdateCapabilityGrid",
+            success: function(data) {
+              reloadGrid("#gridCapability", true);
+              if (data.Result === false) alert(data.Message);
+            },
+            error: function(err) {
+              alert(err.responseText);
+            },
+          });
+        },
+        columns: [{ data: "Id" }, { data: "Description" }, { data: "Slug" }],
+        columnDefs: [
+          {
+            render: function(data, type, row) {
+              return editable({
+                className: "--capability-description",
+                id: row.Id,
+                data: data,
+              });
+            },
+            targets: 1,
+          },
+        ],
+      });
+    });
+    // End
+  });
+
+  function updatePermission(capabilityId, roleId) {
+    ajax({
+      url: "/Permission/AddPermission",
+      type: "post",
+      data: {
+        RoleId: roleId,
+        CapabilityId: capabilityId,
+      },
+    }).done(function(data) {
+      if (data.Result === true) {
+        reloadGrid("#gridPermission");
+      } else {
+        alert(data.Message);
+      }
+    });
+  }
+</script>
+}

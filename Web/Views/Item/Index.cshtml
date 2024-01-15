@@ -1,0 +1,1421 @@
+@using Web.Domain.Services
+@inject IUserService userService
+
+@{ ViewData["Title"] = "Item"; }
+
+<div class="box box-primary">
+    <div class="box-header with-border">
+        <h3 class="box-title">Item</h3>
+    </div>
+    <div class="box-body scroll-x">
+        <div class="btn-panel">
+            @if (userService.CanDisplay("request-item"))
+            {
+                <button class="btn btn-primary" type="button" id="btnAddItem">
+                    <i class="fa fa-plus"></i>
+                    Request Item
+                </button>
+            }
+            @if (userService.CanDisplay("request-item"))
+            {
+                <button class="btn btn-warning" type="button" id="btnEdit">
+                    <i class="fa fa-pencil-square-o"></i>
+                    Edit Item
+                </button>
+            }
+            @if (userService.CanDisplay("request-item"))
+            {
+                <button class="btn btn-danger" type="button" id="btnCancel">
+                    Cancel
+                    <i class="fa fa-times"></i>
+                </button>
+            }
+        </div>
+        <table id="gridRequestItem"
+               class="table table-striped table-bordered table-hover table-condensed table-nowrap"
+               style="width:100%;">
+            <thead>
+                <tr>
+                    <th>Item Group</th>
+                    <th>Unit</th>
+                    <th>Product Group</th>
+                    <th>Sub Group Id</th>
+                    <th>Approved</th>
+                    <th>Remark</th>
+                    <th>Request By</th>
+                    <th>Request Date</th>
+                    <th>Ax Item</th>
+                    <th>Item Name</th>
+                    <th>Ax Created Date</th>
+                </tr>
+                <tr>
+                    <th>Item Group</th>
+                    <th>Unit</th>
+                    <th>Product Group</th>
+                    <th>Sub Group Id</th>
+                    <th>Status</th>
+                    <th>Remark</th>
+                    <th>Request By</th>
+                    <th>Request Date</th>
+                    <th>Ax Item</th>
+                    <th>Item Name</th>
+                    <th>Ax Created Date</th>
+                </tr>
+            </thead>
+        </table>
+    </div>
+</div>
+
+<!-- modal add item -->
+<div class="modal" id="modalAddItem" tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-md" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button href="javascript.void(0);"
+                        class="btn btn-danger pull-right"
+                        data-dismiss="modal"
+                        aria-label="Close">
+                    <i class="fa fa-times"></i>
+                </button>
+                <h4 class="modal-title">Add Item</h4>
+            </div>
+            <div class="modal-body">
+                <form id="formAddItem">
+                    <div class="row">
+                        <div class="col-xs-6">
+                            <div class="form-group">
+                                <label for="ItemGroup">Item Group</label>
+                                <div class="input-group">
+                                    <input type="text"
+                                           name="ItemGroup"
+                                           id="ItemGroup"
+                                           class="form-control"
+                                           required
+                                           readonly
+                                           autocomplete="off" />
+                                    <span class="input-group-btn">
+                                        <button class="btn btn-primary"
+                                                id="btnSelectItemGroup"
+                                                type="button">
+                                            <i class="fa fa-search-plus"></i>
+                                        </button>
+                                    </span>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="Unit">Unit</label>
+                                <div class="input-group">
+                                    <input type="text"
+                                           name="Unit"
+                                           id="Unit"
+                                           class="form-control"
+                                           autocomplete="off"
+                                           required
+                                           readonly />
+                                    <span class="input-group-btn">
+                                        <button class="btn btn-primary"
+                                                id="btnSelectUnit"
+                                                type="button">
+                                            <i class="fa fa-search-plus"></i>
+                                        </button>
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-xs-6">
+                            <div class="form-group">
+                                <label for="ProductGroup">Product Group</label>
+                                <div class="input-group">
+                                    <input type="text"
+                                           name="ProductGroup"
+                                           id="ProductGroup"
+                                           class="form-control"
+                                           autocomplete="off"
+                                           required
+                                           readonly />
+                                    <span class="input-group-btn">
+                                        <button class="btn btn-primary"
+                                                id="btnSelectProductGroup"
+                                                type="button">
+                                            <i class="fa fa-search-plus"></i>
+                                        </button>
+                                    </span>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="SubGroup">Sub Group</label>
+                                <div class="input-group">
+                                    <input type="text"
+                                           name="SubGroup"
+                                           id="SubGroup"
+                                           class="form-control"
+                                           autocomplete="off"
+                                           required
+                                           readonly />
+                                    <span class="input-group-btn">
+                                        <button class="btn btn-primary"
+                                                id="btnSelectSubGroup"
+                                                type="button">
+                                            <i class="fa fa-search-plus"></i>
+                                        </button>
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-xs-12">
+                            <div class="panel panel-success">
+                                <div class="panel-heading">
+                                    Preview
+                                </div>
+                                <div class="panel-body text-center">
+                                    <span id="preview_part">[Part]</span>
+                                    <span id="preview_model">[Model]</span>
+                                    <span id="preview_description">[Description]</span>
+                                    <span id="preview_brand">[Brand]</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row" style="margin-bottom: 20px;">
+                        <div class="col-xs-12">
+                            <span class="text-danger">* Item Name จำกัดแค่ 80 อักษรเท่านั้น!</span>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-xs-6">
+                            <div class="form-group">
+                                <label for="ItemPart">Part</label>
+                                <select name="ItemPart"
+                                        id="ItemPart"
+                                        class="form-control"></select>
+                            </div>
+                            <div class="form-group">
+                                <label for="ItemModel">Model</label>
+                                <input type="text"
+                                       name="ItemModel"
+                                       id="ItemModel"
+                                       autocomplete="off"
+                                       class="form-control" />
+                            </div>
+                        </div>
+                        <div class="col-xs-6">
+                            <div class="form-group">
+                                <label for="ItemDescription">Description</label>
+                                <input type="text"
+                                       name="ItemDescription"
+                                       id="ItemDescription"
+                                       class="form-control"
+                                       value="."
+                                       autocomplete="off"
+                                       required />
+                            </div>
+                            <div class="form-group">
+                                <label for="ItemBrand">Brand</label>
+                                <input type="text"
+                                       name="ItemBrand"
+                                       id="ItemBrand"
+                                       autocomplete="off"
+                                       class="form-control" />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-xs-12">
+                            <div class="form-group">
+                                <label for="Remark">Remark</label>
+                                <textarea name="Remark"
+                                          id="Remark"
+                                          cols="30"
+                                          rows="5"
+                                          autocomplete="off"
+                                          class="form-control"></textarea>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-xs-12">
+                            <button type="submit" class="btn btn-success">
+                                <i class="fa fa-check"></i>
+                                Submit
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- modal select item group -->
+<div class="modal" id="modalSelectItemGroup" tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-md" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button href="javascript.void(0);"
+                        class="btn btn-danger pull-right"
+                        data-dismiss="modal"
+                        aria-label="Close">
+                    <i class="fa fa-times"></i>
+                </button>
+                <h4 class="modal-title">Select Item Group</h4>
+            </div>
+            <div class="modal-body">
+                <div class="btn-panel">
+                    <button class="btn btn-primary"
+                            type="button"
+                            id="btnConfirmSelectItemGroup">
+                        <i class="fa fa-check"></i>
+                        Select Item Group
+                    </button>
+                </div>
+                <table id="gridItemGroup"
+                       class="table table-striped table-bordered table-hover table-condensed table-nowrap"
+                       style="width:100%;">
+                    <thead>
+                        <tr>
+                            <th>Id</th>
+                            <th>Description</th>
+                        </tr>
+                        <tr>
+                            <th>Id</th>
+                            <th>Description</th>
+                        </tr>
+                    </thead>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- modal select item unit -->
+<div class="modal" id="modalSelectItemUnit" tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-md" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button href="javascript.void(0);"
+                        class="btn btn-danger pull-right"
+                        data-dismiss="modal"
+                        aria-label="Close">
+                    <i class="fa fa-times"></i>
+                </button>
+                <h4 class="modal-title">Select Item Unit</h4>
+            </div>
+            <div class="modal-body">
+                <div class="btn-panel">
+                    <button class="btn btn-primary"
+                            type="button"
+                            id="btnConfirmSelectItemUnit">
+                        <i class="fa fa-check"></i>
+                        Select Item Unit
+                    </button>
+                </div>
+                <table id="gridItemUnit"
+                       class="table table-striped table-bordered table-hover table-condensed table-nowrap"
+                       style="width:100%;">
+                    <thead>
+                        <tr>
+                            <th>Id</th>
+                            <th>Description</th>
+                        </tr>
+                        <tr>
+                            <th>Id</th>
+                            <th>Description</th>
+                        </tr>
+                    </thead>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- modal select item product group -->
+<div class="modal" id="modalSelectItemProductGroup" tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-md" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button href="javascript.void(0);"
+                        class="btn btn-danger pull-right"
+                        data-dismiss="modal"
+                        aria-label="Close">
+                    <i class="fa fa-times"></i>
+                </button>
+                <h4 class="modal-title">Select Product Group</h4>
+            </div>
+            <div class="modal-body">
+                <div class="btn-panel">
+                    <button class="btn btn-primary"
+                            type="button"
+                            id="btnConfirmSelectItemProductGroup">
+                        <i class="fa fa-check"></i>
+                        Select Item Product Group
+                    </button>
+                </div>
+                <table id="gridItemProductGroup"
+                       class="table table-striped table-bordered table-hover table-condensed table-nowrap"
+                       style="width:100%;">
+                    <thead>
+                        <tr>
+                            <th>Id</th>
+                            <th>Description</th>
+                        </tr>
+                        <tr>
+                            <th>Id</th>
+                            <th>Description</th>
+                        </tr>
+                    </thead>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- modal select item sub group -->
+<div class="modal" id="modalSelectItemSubGroup" tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-md" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button href="javascript.void(0);"
+                        class="btn btn-danger pull-right"
+                        data-dismiss="modal"
+                        aria-label="Close">
+                    <i class="fa fa-times"></i>
+                </button>
+                <h4 class="modal-title">Select Sub Group</h4>
+            </div>
+            <div class="modal-body">
+                <div class="btn-panel">
+                    <button class="btn btn-primary"
+                            type="button"
+                            id="btnConfirmSelectItemSubGroup">
+                        <i class="fa fa-check"></i>
+                        Select Item Sub Group
+                    </button>
+                </div>
+                <table id="gridItemSubGroup"
+                       class="table table-striped table-bordered table-hover table-condensed table-nowrap"
+                       style="width:100%;">
+                    <thead>
+                        <tr>
+                            <th>Id</th>
+                            <th>Description</th>
+                        </tr>
+                        <tr>
+                            <th>Id</th>
+                            <th>Description</th>
+                        </tr>
+                    </thead>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- modal cancel item -->
+<div class="modal" id="modalCancelItem" tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-md" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button href="javascript.void(0);"
+                        class="btn btn-danger pull-right"
+                        data-dismiss="modal"
+                        aria-label="Close">
+                    <i class="fa fa-times"></i>
+                </button>
+                <h4 class="modal-title"><span id="CancelAlertText"></span></h4>
+            </div>
+            <div class="modal-body" id="modal_cancelbody">
+                <form id="formCancelItem">
+                    <div class="row">
+                        <div class="col-xs-12">
+                            <div class="form-group">
+                                <input type="text"
+                                       name="Id"
+                                       id="Id"
+                                       class="form-control"
+                                       autocomplete="off"
+                                       required
+                                       readonly />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-xs-12">
+                            <button type="submit" id="btnConfirmCancel" class="btn btn-success">
+                                <i class="fa fa-check"></i>
+                                OK
+                            </button>
+                            <button type="button" id="btnCloseCancel" href="javascript.void(0);" class="btn btn-danger">
+                                <i class="fa fa-times"></i>
+                                Cancel
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- modal edit item -->
+<div class="modal" id="modalEditItem" tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-md" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button href="javascript.void(0);"
+                        class="btn btn-danger pull-right"
+                        data-dismiss="modal"
+                        aria-label="Close">
+                    <i class="fa fa-times"></i>
+                </button>
+                <h4 class="modal-title"><span id="EditAlertText"></span></h4>
+            </div>
+            <div class="modal-body" id="modal_editbody">
+                <form id="formEditItem">
+                    <div class="row">
+                        <div class="col-xs-12">
+                            <div class="form-group">
+                                <input type="text"
+                                       name="EId"
+                                       id="EId"
+                                       class="form-control"
+                                       autocomplete="off"
+                                       required
+                                       readonly />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-xs-6">
+                            <div class="form-group">
+                                <label for="EItemGroup">Item Group</label>
+                                <div class="input-group">
+                                    <input type="text"
+                                           name="EItemGroup"
+                                           id="EItemGroup"
+                                           class="form-control"
+                                           required
+                                           readonly
+                                           autocomplete="off" />
+                                    <span class="input-group-btn">
+                                        <button class="btn btn-primary"
+                                                id="btnSelectEItemGroup"
+                                                type="button">
+                                            <i class="fa fa-search-plus"></i>
+                                        </button>
+                                    </span>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="EUnit">Unit</label>
+                                <div class="input-group">
+                                    <input type="text"
+                                           name="EUnit"
+                                           id="EUnit"
+                                           class="form-control"
+                                           autocomplete="off"
+                                           required
+                                           readonly />
+                                    <span class="input-group-btn">
+                                        <button class="btn btn-primary"
+                                                id="btnSelectEUnit"
+                                                type="button">
+                                            <i class="fa fa-search-plus"></i>
+                                        </button>
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-xs-6">
+                            <div class="form-group">
+                                <label for="EProductGroup">Product Group</label>
+                                <div class="input-group">
+                                    <input type="text"
+                                           name="EProductGroup"
+                                           id="EProductGroup"
+                                           class="form-control"
+                                           autocomplete="off"
+                                           required
+                                           readonly />
+                                    <span class="input-group-btn">
+                                        <button class="btn btn-primary"
+                                                id="btnSelectEProductGroup"
+                                                type="button">
+                                            <i class="fa fa-search-plus"></i>
+                                        </button>
+                                    </span>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="ESubGroup">Sub Group</label>
+                                <div class="input-group">
+                                    <input type="text"
+                                           name="ESubGroup"
+                                           id="ESubGroup"
+                                           class="form-control"
+                                           autocomplete="off"
+                                           required
+                                           readonly />
+                                    <span class="input-group-btn">
+                                        <button class="btn btn-primary"
+                                                id="btnSelectESubGroup"
+                                                type="button">
+                                            <i class="fa fa-search-plus"></i>
+                                        </button>
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-xs-12">
+                            <div class="panel panel-info">
+                                <div class="panel-heading">
+                                    Itemname (Before Edit)
+                                </div>
+                                <div>
+                                    <div class="panel-body text-center">
+                                       <span id="EItemNameOld"></span>
+
+                                        <input type="text"
+                                               name="EItemName"
+                                               id="EItemName"
+                                               class="form-control"
+                                               autocomplete="off"
+                                               readonly />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-xs-12">
+                            <div class="panel panel-success">
+                                <div class="panel-heading">
+                                    Preview Itemname (After Edit.)
+                                </div>
+                                <div class="panel-body text-center">
+                                    <span id="Epreview_part">[Part]</span>
+                                    <span id="Epreview_model">[Model]</span>
+                                    <span id="Epreview_description">[Description]</span>
+                                    <span id="Epreview_brand">[Brand]</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-xs-6">
+                            <div class="form-group">
+                                <label for="EItemPart">Part</label>
+                                <select name="EItemPart"
+                                        id="EItemPart"
+                                        class="form-control"></select>
+                            </div>
+                            <div class="form-group">
+                                <label for="EItemModel">Model</label>
+                                <input type="text"
+                                       name="EItemModel"
+                                       id="EItemModel"
+                                       class="form-control"
+                                       autocomplete="off" />
+                            </div>
+                        </div>
+                        <div class="col-xs-6">
+                            <div class="form-group">
+                                <label for="EItemDescription">Description</label>
+                                <input type="text"
+                                       name="EItemDescription"
+                                       id="EItemDescription"
+                                       class="form-control"
+                                       value="."
+                                       required
+                                       autocomplete="off" />
+                            </div>
+                            <div class="form-group">
+                                <label for="EItemBrand">Brand</label>
+                                <input type="text"
+                                       name="EItemBrand"
+                                       id="EItemBrand"
+                                       class="form-control"
+                                       autocomplete="off" />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-xs-12">
+                            <div class="form-group">
+                                <label for="ERemark">Remark</label>
+                                <textarea name="ERemark"
+                                          id="ERemark"
+                                          cols="30"
+                                          rows="5"
+                                          class="form-control"
+                                          autocomplete="off"></textarea>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-xs-12">
+                            <button type="submit" class="btn btn-success">
+                                <i class="fa fa-check"></i>
+                                Submit
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- modal select edit item group -->
+<div class="modal" id="modalSelectEItemGroup" tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-md" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button href="javascript.void(0);"
+                        class="btn btn-danger pull-right"
+                        data-dismiss="modal"
+                        aria-label="Close">
+                    <i class="fa fa-times"></i>
+                </button>
+                <h4 class="modal-title">Select Item Group</h4>
+            </div>
+            <div class="modal-body">
+                <div class="btn-panel">
+                    <button class="btn btn-primary"
+                            type="button"
+                            id="btnConfirmSelectEItemGroup">
+                        <i class="fa fa-check"></i>
+                        Select Item Group
+                    </button>
+                </div>
+                <table id="gridEItemGroup"
+                       class="table table-striped table-bordered table-hover table-condensed table-nowrap"
+                       style="width:100%;">
+                    <thead>
+                        <tr>
+                            <th>Id</th>
+                            <th>Description</th>
+                        </tr>
+                        <tr>
+                            <th>Id</th>
+                            <th>Description</th>
+                        </tr>
+                    </thead>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- modal select edit item unit -->
+<div class="modal" id="modalSelectEItemUnit" tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-md" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button href="javascript.void(0);"
+                        class="btn btn-danger pull-right"
+                        data-dismiss="modal"
+                        aria-label="Close">
+                    <i class="fa fa-times"></i>
+                </button>
+                <h4 class="modal-title">Select Item Unit</h4>
+            </div>
+            <div class="modal-body">
+                <div class="btn-panel">
+                    <button class="btn btn-primary"
+                            type="button"
+                            id="btnConfirmSelectEItemUnit">
+                        <i class="fa fa-check"></i>
+                        Select Item Unit
+                    </button>
+                </div>
+                <table id="gridEItemUnit"
+                       class="table table-striped table-bordered table-hover table-condensed table-nowrap"
+                       style="width:100%;">
+                    <thead>
+                        <tr>
+                            <th>Id</th>
+                            <th>Description</th>
+                        </tr>
+                        <tr>
+                            <th>Id</th>
+                            <th>Description</th>
+                        </tr>
+                    </thead>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- modal select edit item product group -->
+<div class="modal" id="modalSelectEItemProductGroup" tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-md" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button href="javascript.void(0);"
+                        class="btn btn-danger pull-right"
+                        data-dismiss="modal"
+                        aria-label="Close">
+                    <i class="fa fa-times"></i>
+                </button>
+                <h4 class="modal-title">Select Product Group</h4>
+            </div>
+            <div class="modal-body">
+                <div class="btn-panel">
+                    <button class="btn btn-primary"
+                            type="button"
+                            id="btnConfirmSelectEItemProductGroup">
+                        <i class="fa fa-check"></i>
+                        Select Item Product Group
+                    </button>
+                </div>
+                <table id="gridEItemProductGroup"
+                       class="table table-striped table-bordered table-hover table-condensed table-nowrap"
+                       style="width:100%;">
+                    <thead>
+                        <tr>
+                            <th>Id</th>
+                            <th>Description</th>
+                        </tr>
+                        <tr>
+                            <th>Id</th>
+                            <th>Description</th>
+                        </tr>
+                    </thead>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- modal select edit item sub group -->
+<div class="modal" id="modalSelectEItemSubGroup" tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-md" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button href="javascript.void(0);"
+                        class="btn btn-danger pull-right"
+                        data-dismiss="modal"
+                        aria-label="Close">
+                    <i class="fa fa-times"></i>
+                </button>
+                <h4 class="modal-title">Select Sub Group</h4>
+            </div>
+            <div class="modal-body">
+                <div class="btn-panel">
+                    <button class="btn btn-primary"
+                            type="button"
+                            id="btnConfirmSelectEItemSubGroup">
+                        <i class="fa fa-check"></i>
+                        Select Item Sub Group
+                    </button>
+                </div>
+                <table id="gridEItemSubGroup"
+                       class="table table-striped table-bordered table-hover table-condensed table-nowrap"
+                       style="width:100%;">
+                    <thead>
+                        <tr>
+                            <th>Id</th>
+                            <th>Description</th>
+                        </tr>
+                        <tr>
+                            <th>Id</th>
+                            <th>Description</th>
+                        </tr>
+                    </thead>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            // script here.
+            $("#btnAddItem").on("click", function () {
+                $("#modalAddItem").modal({ backdrop: "static" });
+                $("#formAddItem").trigger("reset");
+
+                $("#preview_part").text("[Part] ");
+                $("#preview_model").text("[Model] ");
+                $("#preview_description").text("[Description] ");
+                $("#preview_brand").text("[Brand] ");
+
+                ajax({
+                    url: "/PartMaster/GetPartMaster",
+                    type: "post"
+                }).done(function (data) {
+                    $("select#ItemPart").html("<option value=''>เลือก Part</option>");
+                    $.each(data, function (i, v) {
+                        $("select#ItemPart").append("<option value='" + v.PartName + "'>" + v.PartName + "</option>");
+                    });
+                });
+            });
+
+            //setInterval(function () {
+            //    var part = document.getElementById("preview_part").value.length;
+            //    var model = document.getElementById("preview_model").value.length;
+            //    var desc = document.getElementById("preview_description").value.length;
+            //    var brand = document.getElementById("preview_brand").value.length;
+
+            //    console.log("total length" + (part + model + desc + brand));
+            //}, 500);
+
+            loadGrid({
+                el: "#gridRequestItem",
+                processing: true,
+                serverSide: true,
+                deferRender: true,
+                searching: true,
+                order: [],
+                orderCellsTop: true,
+                destroy: true,
+                select: {
+                    style: "single",
+                },
+                ajax: {
+                    url: "/Item/GetRequestItemGrid",
+                    method: "post",
+                },
+                columns: [
+                    { data: "ItemGroup" },
+                    { data: "Unit" },
+                    { data: "ProductGroup" },
+                    { data: "SubGroup" },
+                    { data: "Approved" },
+                    { data: "Message" },
+                    { data: "RequestBy" },
+                    { data: "RequestDate" },
+                    { data: "AxItemId" },
+                    { data: "ItemName" },
+                    { data: "AxCreateDate" }
+                ],
+                columnDefs: [
+                    {
+                        render: function (data, type, row) {
+                            var _d = 0;
+                            if (data === 1) {
+                                _d = "อนุมัติแล้ว";
+                            } else if (data === 2) {
+                                _d = "ไม่อนุมัติ";
+                            } else if (data === 3) {
+                                _d = "ยกเลิก";
+                            } else {
+                                _d = "รออนุมัติ";
+                            }
+
+                            return editable({
+                                className: "--approved",
+                                id: row.Id,
+                                data: _d,
+                                setColor: ["อนุมัติแล้ว", "ไม่อนุมัติ", "ยกเลิก"],
+                            });
+                        },
+                        targets: 4,
+                    },
+                    {
+                        render: function (data, type, row) {
+                            if (isEmpty(data) === "") return "";
+                            return dayjs(data).format("YYYY-MM-DD HH:mm:ss");
+                        },
+                        targets: 7,
+                    },
+                    {
+                        render: function (data, type, row) {
+                            if (isEmpty(data) === "") return "";
+                            return dayjs(data).format("YYYY-MM-DD HH:mm:ss");
+                        },
+                        targets: 10,
+                    },
+                ],
+                fnDrawCallback: function (settings, json) { },
+            });
+
+
+            $("#formAddItem").on("submit", function (e) {
+                e.preventDefault();
+                $(".modal-body").block();
+                ajax({
+                    url: "/Item/AddItem",
+                    type: "post",
+                    data: $("#formAddItem").serialize(),
+                }).done(function (response) {
+                    $(".modal-body").unblock();
+                    if (response.Result === true) {
+                        $("#modalAddItem").modal("hide");
+                        reloadGrid("#gridRequestItem");
+                    } else {
+                        alert(response.Message);
+                    }
+                });
+            });
+
+            $("#ItemPart").on("change", function () {
+                $("#preview_part").text($("#ItemPart").val());
+            });
+
+            $("#ItemModel").on("keyup", function () {
+                $("#preview_model").text($("#ItemModel").val());
+            });
+
+            // default
+            $("#preview_description").text($("#ItemDescription").val());
+
+            $("#ItemDescription").on("keyup", function () {
+                $("#preview_description").text($("#ItemDescription").val());
+            });
+
+            $("#ItemBrand").on("keyup", function () {
+                $("#preview_brand").text($("#ItemBrand").val());
+            });
+
+            // item group
+            $("#btnSelectItemGroup").on("click", function () {
+                $("#modalSelectItemGroup").modal({ backdrop: "static" });
+
+                loadGrid({
+                    el: "#gridItemGroup",
+                    processing: false,
+                    serverSide: false,
+                    deferRender: true,
+                    searching: true,
+                    order: [],
+                    orderCellsTop: true,
+                    destroy: true,
+                    select: {
+                        style: "single",
+                    },
+                    ajax: {
+                        url: "/Item/GetItemGroup",
+                        method: "post",
+                    },
+                    columns: [{ data: "Id" }, { data: "Description" }],
+                    fnDrawCallback: function (settings, json) { },
+                });
+            });
+
+            $("#btnConfirmSelectItemGroup").on("click", function () {
+                var rowdata = getRowsSelected("#gridItemGroup");
+                if (rowdata.length > 0) {
+                    $("input[name=ItemGroup]").val(rowdata[0].Id);
+                    $("#modalSelectItemGroup").modal("hide");
+                } else {
+                    alert("กุณาเลือกข้อมูล");
+                }
+            });
+
+            // unit
+            $("#btnSelectUnit").on("click", function () {
+                $("#modalSelectItemUnit").modal({ backdrop: "static" });
+
+                loadGrid({
+                    el: "#gridItemUnit",
+                    processing: false,
+                    serverSide: false,
+                    deferRender: true,
+                    searching: true,
+                    order: [],
+                    orderCellsTop: true,
+                    destroy: true,
+                    select: {
+                        style: "single",
+                    },
+                    ajax: {
+                        url: "/Item/GetItemUnit",
+                        method: "post",
+                    },
+                    columns: [{ data: "Id" }, { data: "Description" }],
+                    fnDrawCallback: function (settings, json) { },
+                });
+            });
+
+            $("#btnConfirmSelectItemUnit").on("click", function () {
+                var rowdata = getRowsSelected("#gridItemUnit");
+                if (rowdata.length > 0) {
+                    $("input[name=Unit]").val(rowdata[0].Id);
+                    $("#modalSelectItemUnit").modal("hide");
+                } else {
+                    alert("กุณาเลือกข้อมูล");
+                }
+            });
+
+            // product group
+            $("#btnSelectProductGroup").on("click", function () {
+                $("#modalSelectItemProductGroup").modal({ backdrop: "static" });
+
+                loadGrid({
+                    el: "#gridItemProductGroup",
+                    processing: false,
+                    serverSide: false,
+                    deferRender: true,
+                    searching: true,
+                    order: [],
+                    orderCellsTop: true,
+                    destroy: true,
+                    select: {
+                        style: "single",
+                    },
+                    ajax: {
+                        url: "/Item/GetItemProductGroup",
+                        method: "post",
+                    },
+                    columns: [{ data: "Id" }, { data: "Description" }],
+                    fnDrawCallback: function (settings, json) { },
+                });
+            });
+
+            $("#btnConfirmSelectItemProductGroup").on("click", function () {
+                var rowdata = getRowsSelected("#gridItemProductGroup");
+                if (rowdata.length > 0) {
+                    $("input[name=ProductGroup]").val(rowdata[0].Id);
+                    $("#modalSelectItemProductGroup").modal("hide");
+                } else {
+                    alert("กุณาเลือกข้อมูล");
+                }
+            });
+
+            // sub group
+            $("#btnSelectSubGroup").on("click", function () {
+                $("#modalSelectItemSubGroup").modal({ backdrop: "static" });
+
+                loadGrid({
+                    el: "#gridItemSubGroup",
+                    processing: false,
+                    serverSide: false,
+                    deferRender: true,
+                    searching: true,
+                    order: [],
+                    orderCellsTop: true,
+                    destroy: true,
+                    select: {
+                        style: "single",
+                    },
+                    ajax: {
+                        url: "/Item/GetItemSubGroup",
+                        method: "post",
+                    },
+                    columns: [{ data: "Id" }, { data: "Description" }],
+                    fnDrawCallback: function (settings, json) { },
+                });
+            });
+
+            $("#btnConfirmSelectItemSubGroup").on("click", function () {
+                var rowdata = getRowsSelected("#gridItemSubGroup");
+                if (rowdata.length > 0) {
+                    $("input[name=SubGroup]").val(rowdata[0].Id);
+                    $("#modalSelectItemSubGroup").modal("hide");
+                } else {
+                    alert("กุณาเลือกข้อมูล");
+                }
+            });
+
+            //cancel
+            $("#btnCancel").on("click", function () {
+                $("#modalCancelItem").modal({ backdrop: "static" });
+                var rowdata = getRowsSelected("#gridRequestItem");
+                if (rowdata.length > 0) {
+                    if (rowdata[0].Approved == 0) {
+
+                        $("#CancelAlertText").text("ต้องการยกเลิกรายการที่เลือกหรือไม่?");
+                        $("#modal_cancelbody").show();
+                        $("#Id").hide();
+                        $("#Id").val(rowdata[0].Id);
+                    }
+                    else {
+                        var approvetext = "";
+                        if (rowdata[0].Approved == 1) {
+                            approvetext = "อนุมัติ";
+                        }
+                        else if (rowdata[0].Approved == 2) {
+                            approvetext = "ไม่อนุมัติ";
+                        }
+                        else if (rowdata[0].Approved == 3) {
+                            approvetext = "ยกเลิก";
+                        }
+                        $("#CancelAlertText").text("ไม่สามารถยกเลิกได้ เนื่องจากItemนี้ " + approvetext + "แล้ว");
+                        $("#modal_cancelbody").hide();
+                    }
+                }
+                else {
+                    $("#CancelAlertText").text("กุณาเลือกข้อมูลที่ต้องการยกเลิก !!");
+                    $("#modal_cancelbody").hide();
+                }
+            });
+
+            $("#formCancelItem").on("submit", function (e) {
+                e.preventDefault();
+                $(".modal-body").block();
+                ajax({
+                    url: "/Item/CancelItem",
+                    type: "post",
+                    data: $("#formCancelItem").serialize(),
+                }).done(function (response) {
+                    $(".modal-body").unblock();
+                    if (response.Result === true) {
+                        reloadGrid("#gridRequestItem");
+                        $("#modalCancelItem").modal("hide");
+                    } else {
+                        alert(response.Message);
+                    }
+                });
+            });
+
+            $("#btnCloseCancel").on("click", function () {
+                $("#modalCancelItem").modal("hide");
+            });
+
+            //edit
+            $("#btnEdit").on("click", function () {
+                $("#modalEditItem").modal({ backdrop: "static" });
+                $("#formEditItem").trigger("reset");
+                var rowdata = getRowsSelected("#gridRequestItem");
+                if (rowdata.length > 0) {
+                    if (rowdata[0].Approved == 0) {
+
+                        $("#EditAlertText").text("Edit Item");
+
+                        $("#modal_editbody").show();
+
+                        $("#Epreview_part").text("[Part] ");
+                        $("#Epreview_model").text("[Model] ");
+                        $("#Epreview_description").text("[Description] ");
+                        $("#Epreview_brand").text("[Brand] ");
+
+                        $("#EItemName").hide();
+                        $("#EId").hide();
+                        $("#EId").val(rowdata[0].Id);
+                        $("#EItemGroup").val(rowdata[0].ItemGroup);
+                        $("#EUnit").val(rowdata[0].Unit);
+                        $("#EProductGroup").val(rowdata[0].ProductGroup);
+                        $("#ESubGroup").val(rowdata[0].SubGroup);
+                        $("#EItemNameOld").text(rowdata[0].ItemName);
+                        $("#EItemName").val(rowdata[0].ItemName);
+                        $("#ERemark").val(rowdata[0].Remark);
+
+                        
+
+                        ajax({
+                            url: "/PartMaster/GetPartMaster",
+                            type: "post"
+                        }).done(function (data) {
+                            $("select#EItemPart").html("<option value=''>เลือก Part</option>");
+                            $.each(data, function (i, v) {
+                                $("select#EItemPart").append("<option value='" + v.PartName + "'>" + v.PartName + "</option>");
+                            });
+                        });
+
+                    }
+                    else {
+                        $("#modal_editbody").hide();
+                        var approvetext = "";
+                        if (rowdata[0].Approved == 1) {
+                            approvetext = "อนุมัติ";
+                        }
+                        else if (rowdata[0].Approved == 2) {
+                            approvetext = "ไม่อนุมัติ";
+                        } else if (rowdata[0].Approved == 3) {
+                            approvetext = "ยกเลิก";
+                        }
+                        $("#EditAlertText").text("ไม่สามารถแก้ไขได้ เนื่องจากItemนี้ " + approvetext + "แล้ว");
+
+                    }
+
+                } else {
+                    $("#modal_editbody").hide();
+                    $("#EditAlertText").text("กุณาเลือกข้อมูลที่ต้องการแก้ไข");
+
+                }
+            });
+
+            //edit item group
+            $("#btnSelectEItemGroup").on("click", function () {
+                $("#modalSelectEItemGroup").modal({ backdrop: "static" });
+
+                loadGrid({
+                    el: "#gridEItemGroup",
+                    processing: false,
+                    serverSide: false,
+                    deferRender: true,
+                    searching: true,
+                    order: [],
+                    orderCellsTop: true,
+                    destroy: true,
+                    select: {
+                        style: "single",
+                    },
+                    ajax: {
+                        url: "/Item/GetItemGroup",
+                        method: "post",
+                    },
+                    columns: [{ data: "Id" }, { data: "Description" }],
+                    fnDrawCallback: function (settings, json) { },
+                });
+            });
+
+            $("#btnConfirmSelectEItemGroup").on("click", function () {
+                var rowdata = getRowsSelected("#gridEItemGroup");
+                if (rowdata.length > 0) {
+                    $("input[name=EItemGroup]").val(rowdata[0].Id);
+                    $("#modalSelectEItemGroup").modal("hide");
+                } else {
+                    alert("กุณาเลือกข้อมูล");
+                }
+            });
+
+            //edit unit
+            $("#btnSelectEUnit").on("click", function () {
+                $("#modalSelectEItemUnit").modal({ backdrop: "static" });
+
+                loadGrid({
+                    el: "#gridEItemUnit",
+                    processing: false,
+                    serverSide: false,
+                    deferRender: true,
+                    searching: true,
+                    order: [],
+                    orderCellsTop: true,
+                    destroy: true,
+                    select: {
+                        style: "single",
+                    },
+                    ajax: {
+                        url: "/Item/GetItemUnit",
+                        method: "post",
+                    },
+                    columns: [{ data: "Id" }, { data: "Description" }],
+                    fnDrawCallback: function (settings, json) { },
+                });
+            });
+
+            $("#btnConfirmSelectEItemUnit").on("click", function () {
+                var rowdata = getRowsSelected("#gridEItemUnit");
+                if (rowdata.length > 0) {
+                    $("input[name=EUnit]").val(rowdata[0].Id);
+                    $("#modalSelectEItemUnit").modal("hide");
+                } else {
+                    alert("กุณาเลือกข้อมูล");
+                }
+            });
+
+            // product group
+            $("#btnSelectEProductGroup").on("click", function () {
+                $("#modalSelectEItemProductGroup").modal({ backdrop: "static" });
+
+                loadGrid({
+                    el: "#gridEItemProductGroup",
+                    processing: false,
+                    serverSide: false,
+                    deferRender: true,
+                    searching: true,
+                    order: [],
+                    orderCellsTop: true,
+                    destroy: true,
+                    select: {
+                        style: "single",
+                    },
+                    ajax: {
+                        url: "/Item/GetItemProductGroup",
+                        method: "post",
+                    },
+                    columns: [{ data: "Id" }, { data: "Description" }],
+                    fnDrawCallback: function (settings, json) { },
+                });
+            });
+
+            $("#btnConfirmSelectEItemProductGroup").on("click", function () {
+                var rowdata = getRowsSelected("#gridEItemProductGroup");
+                if (rowdata.length > 0) {
+                    $("input[name=EProductGroup]").val(rowdata[0].Id);
+                    $("#modalSelectEItemProductGroup").modal("hide");
+                } else {
+                    alert("กุณาเลือกข้อมูล");
+                }
+            });
+
+            // sub group
+            $("#btnSelectESubGroup").on("click", function () {
+                $("#modalSelectEItemSubGroup").modal({ backdrop: "static" });
+
+                loadGrid({
+                    el: "#gridEItemSubGroup",
+                    processing: false,
+                    serverSide: false,
+                    deferRender: true,
+                    searching: true,
+                    order: [],
+                    orderCellsTop: true,
+                    destroy: true,
+                    select: {
+                        style: "single",
+                    },
+                    ajax: {
+                        url: "/Item/GetItemSubGroup",
+                        method: "post",
+                    },
+                    columns: [{ data: "Id" }, { data: "Description" }],
+                    fnDrawCallback: function (settings, json) { },
+                });
+            });
+
+            $("#btnConfirmSelectEItemSubGroup").on("click", function () {
+                var rowdata = getRowsSelected("#gridEItemSubGroup");
+                if (rowdata.length > 0) {
+                    $("input[name=ESubGroup]").val(rowdata[0].Id);
+                    $("#modalSelectEItemSubGroup").modal("hide");
+                } else {
+                    alert("กุณาเลือกข้อมูล");
+                }
+            });
+
+            //edit itemname
+            $("#EItemPart").on("change", function () {
+                $("#Epreview_part").text($("#EItemPart").val());
+                $("#EItemName").val("");
+            });
+
+            $("#EItemModel").on("keyup", function () {
+
+                $("#Epreview_model").text($("#EItemModel").val());
+                $("#EItemName").val("");
+            });
+
+            $("#Epreview_description").text($("#EItemDescription").val());
+
+            $("#EItemDescription").on("keyup", function () {
+
+                $("#Epreview_description").text($("#EItemDescription").val());
+                $("#EItemName").val("");
+            });
+
+            $("#EItemBrand").on("keyup", function () {
+                $("#Epreview_brand").text($("#EItemBrand").val());
+                $("#EItemName").val("");
+            });
+
+            $("#formEditItem").on("submit", function (e) {
+                e.preventDefault();
+                $(".modal-body").block();
+                ajax({
+                    url: "/Item/EditItem",
+                    type: "post",
+                    data: $("#formEditItem").serialize(),
+                }).done(function (response) {
+                    $(".modal-body").unblock();
+                    if (response.Result === true) {
+                        reloadGrid("#gridRequestItem");
+                        $("#modalEditItem").modal("hide");
+                        alert(response.Message);
+                    } else {
+                        alert(response.Message);
+                    }
+                });
+            });
+
+        }); // end
+    </script>
+}

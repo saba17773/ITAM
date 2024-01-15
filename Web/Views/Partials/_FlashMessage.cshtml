@@ -1,0 +1,29 @@
+@if (ViewData["ErrorMessage"] != null)
+{
+  <div class="bs-callout bs-callout-danger" role="alert">
+  @foreach(var error in ViewData["ErrorMessage"] as List<string>) 
+  {
+    <div>@error</div>
+  }
+  </div>
+}
+
+@if (ViewData["InfoMessage"] != null)
+{
+  <div class="bs-callout bs-callout-info" role="alert">
+  @foreach(var info in ViewData["InfoMessage"] as List<string>) 
+  {
+    <div>@info</div>
+  }
+  </div>
+}
+
+@if (ViewData["SuccessMessage"] != null)
+{
+  <div class="bs-callout bs-callout-success" role="alert">
+  @foreach(var success in ViewData["SuccessMessage"] as List<string>) 
+  {
+    <div>@success</div>
+  }
+  </div>
+}
